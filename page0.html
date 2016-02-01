@@ -29,11 +29,11 @@
         .highlight { background-color:darkgray;}
         .popnomore{display:none;}
         .pop {
-            background: #eee;
-            border: 1px solid #ccc;
+            background-color: #eee;
+            border: 2px solid darkcyan;//#ccc;
             padding: 10px;
             border-radius: 8px;
-            //box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
             position: absolute;
             width: 200px;
             top:100px;left:200px;
@@ -45,9 +45,9 @@
             position: absolute;
             display: inline-block;
             border-top: 7px solid transparent;
-            border-right: 7px solid #eee;
+            border-right: 7px solid darkcyan;
             border-bottom: 7px solid transparent;
-            border-right-color: rgba(0, 0, 0, 0.2);
+            border-right-color: darkcyan;//rgba(0, 0, 0, 0.2);
             left: -8px;
             top: 15px;
             content: '';
@@ -93,13 +93,34 @@
         background: white;
         border-color: silver;
         border-width: 1px;
-        width:98%;
+        width:68%;
         height: 94%;
-        left:1%;
+        left:.5%;
         top:3%;
         box-shadow: 2px 2px 10px;
+        overflow-y: auto;
     }
+    
+    .innerRight{
+        float:right;
+        position:relative;
+        border-style:dashed;
+        background: white;
+        border-color: silver;
+        border-width: 1px;
+        width:30%;
+        height: 94%;
+        left:0%;
+        top:3%;
+        box-shadow: 2px 2px 10px;
+        overflow-y: auto;
+    }
+    
+    
       
+    .container{
+        opacity: .2;
+    }
 </style>
 <body id="body" ondblclick="isSentence(event)">
     <div id='input' class="inpuText">
@@ -124,6 +145,9 @@
     <div id="pubPage" class="divstyle">
         <span><a href="#" onclick="hidePubpage()">edit</a></span> <span><a href="#" onclick="mark()">mark</a></span> 
         <div id="pubContent" class="inner">
+            
+        </div>
+        <div id="pubContentExtra" class="innerRight">
             
         </div>
     </div>
