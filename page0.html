@@ -17,9 +17,12 @@
         .bold{
             font-weight:bold;
         }
-        .inputText{
-            min-width: 100;
-            height: 100;
+        .inpuText{
+            position: relative;
+            height: 40%;
+            width: 60%;
+            left:20%;
+            top:10%;
         }
         
        
@@ -34,6 +37,7 @@
             position: absolute;
             width: 200px;
             top:100px;left:200px;
+            z-index: 999999;
         }
 
         /* arrows - :before and :after */
@@ -69,14 +73,41 @@
         background:orange;
         }
         
+    .divstyle{
+        position: absolute;
+        border-style: ridge;
+        border-color:darkcyan;
+        background-color:cadetblue;
+        width: 98%;
+        height:96%;
+        left:1%;
+        top:2%;
+        //box-shadow: 2px 2px 5px;
+        
+        z-index: 999;
+    }
+    
+    .inner{
+        position:absolute;
+        border-style:dashed;
+        background: white;
+        border-color: silver;
+        border-width: 1px;
+        width:98%;
+        height: 94%;
+        left:1%;
+        top:3%;
+        box-shadow: 2px 2px 10px;
+    }
       
 </style>
 <body id="body" ondblclick="isSentence(event)">
-    <div id='input'></div>
-    <textarea class='inpuText' id='toPublish' rows="20" cols="100"></textarea><br>
+    <div id='input' class="inpuText">
+    <textarea class='inpuText' id='toPublish'></textarea><br>
     
     <button id='publish' onclick="addData()"> Publish</button>
     <button id="execute">Mark</button>
+    
      <div class="pop" id="xyz">
         <textarea id='comment' rows='4' cols='25'>Type here</textarea>
         <div>
@@ -87,14 +118,25 @@
     <div class="container" id="container">
        
     </div>
+        <span class="sentence" id="sen1"> With Instant Articles, publishers are in control.</span><span class="sentence"  id="sen2"> You decide what to publish.</span> <span class="sentence"  id="sen3">Sell ads in your articles and keep the revenue, or take advantage of Facebook Audience Network to maximize total revenue.</span> <span class="sentence"  id="sen4">Earn comScore traffic credit and leverage your own analytics tools.</span><span class="sentence"  id="sen5"> Customize your articles and News Feed previews to match your brand identity.</span>
+        
+    </div>
+    <div id="pubPage" class="divstyle">
+        <span><a href="#" onclick="hidePubpage()">edit</a></span> <span><a href="#" onclick="mark()">mark</a></span> 
+        <div id="pubContent" class="inner">
+            
+        </div>
+    </div>
     
-    
-<span class="sentence" id="sen1"> With Instant Articles, publishers are in control.</span><span class="sentence"  id="sen2"> You decide what to publish.</span> <span class="sentence"  id="sen3">Sell ads in your articles and keep the revenue, or take advantage of Facebook Audience Network to maximize total revenue.</span> <span class="sentence"  id="sen4">Earn comScore traffic credit and leverage your own analytics tools.</span><span class="sentence"  id="sen5"> Customize your articles and News Feed previews to match your brand identity.</span>
+
 
 </body>
 
 <script>
-    function addData(){
+        var pubpage=document.getElementById('pubPage');
+        pubpage.style.visibility='hidden';
+        function addData(){
+
         document.getElementById("container").className = "someClass";
         var input="This is a line _*with*_ _so^me^ My link goes here [Link](http://examplegetlink.com)";
         input=document.getElementById("toPublish").value;
@@ -159,16 +201,16 @@
         
         tagged=input;
         document.getElementById('container').innerHTML=tagged;
-        
+        showPubpage(tagged);
     }
     
-    document.getElementById('execute').addEventListener('click', function() {
+    function mark() {
     var range = window.getSelection().getRangeAt(0),
     span = document.createElement('span');
     span.className = 'highlight';
     span.appendChild(range.extractContents());
     range.insertNode(span);
-    });
+    }
         
     
     document.getElementById('xyz').style.visibility='hidden';   
@@ -210,5 +252,15 @@
         document.getElementById('xyz').style.visibility='hidden';   
     }
     
+    function showPubpage(tagged){   
+            pubpage.style.visibility='';
+            document.getElementById('pubContent').innerHTML=tagged;
+
+    }
+    
+    function hidePubpage(){
+         pubpage.style.visibility='hidden';
+         document.getElementById('xyz').style.visibility='hidden';
+    }
 </script>
 </html>
