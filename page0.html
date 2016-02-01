@@ -1,0 +1,214 @@
+<html>
+<head>
+    <title></title>
+</head>
+<style>
+        .someClass{
+            //color:red;
+            //font-weight:bold;
+            
+        }
+        .under{
+            text-decoration: underline;
+        }
+        .bigText{
+            font-size: 25px;
+        }
+        .bold{
+            font-weight:bold;
+        }
+        .inputText{
+            min-width: 100;
+            height: 100;
+        }
+        
+       
+        .highlight { background-color:darkgray;}
+        .popnomore{display:none;}
+        .pop {
+            background: #eee;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 8px;
+            //box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+            position: absolute;
+            width: 200px;
+            top:100px;left:200px;
+        }
+
+        /* arrows - :before and :after */
+        .pop:before {
+            position: absolute;
+            display: inline-block;
+            border-top: 7px solid transparent;
+            border-right: 7px solid #eee;
+            border-bottom: 7px solid transparent;
+            border-right-color: rgba(0, 0, 0, 0.2);
+            left: -8px;
+            top: 15px;
+            content: '';
+        }
+
+        .pop:after {
+            position: absolute;
+            display: inline-block;
+            border-top: 6px solid transparent;
+            border-right: 6px solid #eee;
+            border-bottom: 6px solid transparent;
+            left: -6px;
+            top: 16px;
+            content: '';
+        }
+
+          .sentence{
+        -webkit-transition:background 2s;
+        transition:2;
+        }
+
+        .sentence:hover{
+        background:orange;
+        }
+        
+      
+</style>
+<body id="body" ondblclick="isSentence(event)">
+    <div id='input'></div>
+    <textarea class='inpuText' id='toPublish' rows="20" cols="100"></textarea><br>
+    
+    <button id='publish' onclick="addData()"> Publish</button>
+    <button id="execute">Mark</button>
+     <div class="pop" id="xyz">
+        <textarea id='comment' rows='4' cols='25'>Type here</textarea>
+        <div>
+            <input type="text" id='autho' placeholder="Author">  
+            <button onclick="hideCom()">Publish</button>
+        </div>
+    </div>
+    <div class="container" id="container">
+       
+    </div>
+    
+    
+<span class="sentence" id="sen1"> With Instant Articles, publishers are in control.</span><span class="sentence"  id="sen2"> You decide what to publish.</span> <span class="sentence"  id="sen3">Sell ads in your articles and keep the revenue, or take advantage of Facebook Audience Network to maximize total revenue.</span> <span class="sentence"  id="sen4">Earn comScore traffic credit and leverage your own analytics tools.</span><span class="sentence"  id="sen5"> Customize your articles and News Feed previews to match your brand identity.</span>
+
+</body>
+
+<script>
+    function addData(){
+        document.getElementById("container").className = "someClass";
+        var input="This is a line _*with*_ _so^me^ My link goes here [Link](http://examplegetlink.com)";
+        input=document.getElementById("toPublish").value;
+        var reBold = /\*[^*]*\*/;
+        var reUnderline = /_[^_]*_/; // g flag for multiple search
+        var reBigText = /\^[^^]*\^/;
+        var reLink = /\[[^\]]*\]\([^\)]*\)/; /// Working  var reLink = /\[[^\]]*\]/;
+        var str = '<B>John Smith</B>';
+        var reSquare =/\[[^\]]*\]/;
+        var rePara = /\([^\)]*\)/;    
+        match = reLink.exec(input);       
+        while (match != null) {
+            var bracketMatch = rePara.exec(match[0]);
+            var textMatch = reSquare.exec(match[0]);
+            newAppend =  '<a href="' + bracketMatch[0].substring(1,bracketMatch[0].length-1)+'">' + textMatch[0].substring(1,textMatch[0].length-1)  +'</a>';
+            input = input.replace(reLink, newAppend);
+            match = reLink.exec(input);
+        }
+        
+        /*  These three can be converted to a generic function*/
+        //4
+        var reSen = /[^\.]*[.]/g;
+        match = reSen.exec(input);
+        var counter=1;
+        var tagged = "";
+        while (match != null) {
+            newAppend =  '<span class="sentence" id="sen'+ counter +'">' +input.substring(0,match[0].length+1) +'</span>';
+            //input = input.replace(reSen, newAppend);
+            input = input.substring(match[0].length+1, input.length);
+            match = reSen.exec(input);
+            tagged =tagged + newAppend;
+            counter = counter + 1;
+        }
+
+        tagged = tagged + '<span class="sentence" id="sen'+ counter +'">' + input  +'</span>';// Last sentence if missed
+        tagged = tagged.replace(/\n/g,'<br>');
+        
+        //1
+        input = tagged;
+        match = reUnderline.exec(input);       
+        while (match != null) {
+            newAppend =  '<span class="under">' + match[0].substring(1, match[0].length-1)+'</span>';
+            input = input.replace(reUnderline, newAppend);
+            match = reUnderline.exec(input);
+        }
+   
+        //2
+        match = reBigText.exec(input);
+        while (match != null) {
+            newAppend =  '<span class="bigText">' + match[0].substring(1, match[0].length-1)+'</span>';
+            input = input.replace(reBigText, newAppend);
+            match = reBigText.exec(input);
+        }
+        
+        //3
+        match = reBold.exec(input);
+        while (match != null) {
+            newAppend =  '<span class="bold">' + match[0].substring(1, match[0].length-1)+'</span>';
+            input = input.replace(reBold, newAppend);
+            match = reBold.exec(input);
+        }
+        
+        tagged=input;
+        document.getElementById('container').innerHTML=tagged;
+        
+    }
+    
+    document.getElementById('execute').addEventListener('click', function() {
+    var range = window.getSelection().getRangeAt(0),
+    span = document.createElement('span');
+    span.className = 'highlight';
+    span.appendChild(range.extractContents());
+    range.insertNode(span);
+    });
+        
+    
+    document.getElementById('xyz').style.visibility='hidden';   
+    var bodydiv=document.getElementById('body');
+    bodydiv.addEventListener('dblclick', function(event){ 
+        if(!isSentence(event))
+            return;
+        var popdiv= document.getElementById('xyz');
+        popdiv.style.position="absolute";
+        popdiv.style.left =event.clientX  +'px'; 
+        popdiv.style.top =event.clientY -25+'px'; 
+    });
+
+        
+    var senTag;
+    function isSentence(e){ 
+        node = e.target;
+        while(node){
+            if(node.className==='sentence'){
+                node.style.background='yellow';
+                senTag = node; // get span id and save the somment and author with this as key;
+                document.getElementById('xyz').style.visibility='';
+                return true;
+            }else
+                node =node.parentElement;
+        }
+            return false;
+    }
+        
+    // saving comments
+    function saveComment(sentenceId, comment, author){
+        if(typeof(Storage) !== "undefined") {    
+            } else {
+                alert("Localstorage not is supported by your browser");
+            }
+        }
+        
+    function hideCom(){
+        document.getElementById('xyz').style.visibility='hidden';   
+    }
+    
+</script>
+</html>
