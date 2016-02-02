@@ -30,7 +30,7 @@
         .popnomore{display:none;}
         .pop {
             background-color: #eee;
-            border: 2px solid darkcyan;//#ccc;
+            border: 2px solid darkcyan; //#ccc;
             padding: 10px;
             border-radius: 8px;
             box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
@@ -47,7 +47,7 @@
             border-top: 7px solid transparent;
             border-right: 7px solid darkcyan;
             border-bottom: 7px solid transparent;
-            border-right-color: darkcyan;//rgba(0, 0, 0, 0.2);
+            border-right-color: darkcyan; //rgba(0, 0, 0, 0.2);
             left: -8px;
             top: 15px;
             content: '';
@@ -64,7 +64,7 @@
             content: '';
         }
 
-          .sentence{
+        .sentence{
         -webkit-transition:background 2s;
         transition:2;
         }
@@ -73,7 +73,7 @@
         background:orange;
         }
         
-    .divstyle{
+       .divstyle{
         position: absolute;
         border-style: ridge;
         border-color:darkcyan;
@@ -85,9 +85,9 @@
         //box-shadow: 2px 2px 5px;
         
         z-index: 999;
-    }
+       }
     
-    .inner{
+       .inner{
         position:absolute;
         border-style:dashed;
         background: white;
@@ -99,9 +99,9 @@
         top:3%;
         box-shadow: 2px 2px 10px;
         overflow-y: auto;
-    }
+       }
     
-    .innerRight{
+      .innerRight{
         float:right;
         position:relative;
         border-style:dashed;
@@ -114,13 +114,13 @@
         top:3%;
         box-shadow: 2px 2px 10px;
         overflow-y: auto;
-    }
+       }
     
     
       
-    .container{
+      .container{
         opacity: .2;
-    }
+      }
 </style>
 <body id="body" ondblclick="isSentence(event)">
     <div id='input' class="inpuText">
@@ -132,8 +132,8 @@
      <div class="pop" id="xyz">
         <textarea id='comment' rows='4' cols='25'>Type here</textarea>
         <div>
-            <input type="text" id='autho' placeholder="Author">  
-            <button onclick="hideCom()">Publish</button>
+            <input type="text" id='author' placeholder="Author">  
+            <button onclick="hideCom();addComment()">Publish</button>
         </div>
     </div>
     <div class="container" id="container">
@@ -148,7 +148,8 @@
             
         </div>
         <div id="pubContentExtra" class="innerRight">
-            
+            <div id="divSenComm" class="commInner">
+            </div>
         </div>
     </div>
     
@@ -187,7 +188,7 @@
         var counter=1;
         var tagged = "";
         while (match != null) {
-            newAppend =  '<span class="sentence" id="sen'+ counter +'">' +input.substring(0,match[0].length+1) +'</span>';
+            newAppend =  '<span class="sentence" id="'+ counter +'">' +input.substring(0,match[0].length+1) +'</span>';
             //input = input.replace(reSen, newAppend);
             input = input.substring(match[0].length+1, input.length);
             match = reSen.exec(input);
@@ -195,7 +196,7 @@
             counter = counter + 1;
         }
 
-        tagged = tagged + '<span class="sentence" id="sen'+ counter +'">' + input  +'</span>';// Last sentence if missed
+        tagged = tagged + '<span class="sentence" id="'+ counter +'">' + input  +'</span>';// Last sentence if missed
         tagged = tagged.replace(/\n/g,'<br>');
         
         //1
@@ -257,20 +258,66 @@
                 node.style.background='yellow';
                 senTag = node; // get span id and save the somment and author with this as key;
                 document.getElementById('xyz').style.visibility='';
+                setCurrentSenId(node); // 
                 return true;
             }else
                 node =node.parentElement;
         }
             return false;
     }
+    
+    //Sets current sentence
+    var currentSentence = 0;
+    function setCurrentSenId(senNode){
+        var i;
+        for(i=0;i<senNode.attributes.length;i++){
+            //alert(senNode.attributes[i].name);
+            if(senNode.attributes[i].name ==="id"){
+                currentSentence = "" + senNode.attributes[i].value;
+                break;
+            }
+        }
+    }
+    //var sentenceId = 1;
+    function addComment(){
+        var comm  = document.getElementById('comment').value;
+        var author = document.getElementById('author').value;
+        saveComment(comm, author);
         
+    }
     // saving comments
-    function saveComment(sentenceId, comment, author){
-        if(typeof(Storage) !== "undefined") {    
+    var comments = [];
+    
+    
+    function saveComment(comment, author){
+        if(typeof(Storage) !== "undefined") {
+            var json = {"author" : author,"comment" : comment };
+            var commList = JSON.parse(localStorage.getItem(currentSentence));
+            //alert(currentSentence);
+            //alert(JSON.parse(commList));
+           //alert(sentId);
+            if(commList!==null){
+                commList.push(json);
+            }else{
+                commList = [];
+                commList.push(json);
+                //sentenceId = sentenceId + 1;
+            }
+        
+            //alert(commList[0].author); 
+            localStorage.setItem(currentSentence, JSON.stringify(commList));
+            // Iterate and add the comment to div
+            //divSenComm
+            var authCom = "";
+            for(x in commList){
+                authCom = authCom + "<div>" + commList[x].comment +"</div><div>" + commList[x].author+ "</div>";    
+            }
+            
+            document.getElementById('divSenComm').innerHTML = authCom;
             } else {
                 alert("Localstorage not is supported by your browser");
             }
-        }
+    }
         
     function hideCom(){
         document.getElementById('xyz').style.visibility='hidden';   
